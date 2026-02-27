@@ -1,0 +1,28 @@
+name: Daily Telegram Stock Briefing
+
+on:
+  schedule:
+    # 매일 오전 8시 KST = 전날 23:00 UTC
+    - cron: "0 23 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install yfinance requests
+
+      - name: Send briefing
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python send_briefing.py
