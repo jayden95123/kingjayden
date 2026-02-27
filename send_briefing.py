@@ -13,9 +13,17 @@ US_TICKERS = {
 }
 
 def get_close_and_change(ticker: str):
-    df = yf.download(ticker, period="5d", interval="1d", progress=False).dropna()
-    close = float(df["Close"].iloc[-1])
-    prev = float(df["Close"].iloc[-2])
+   df = yf.download(ticker, period="5d", interval="1d", progress=False)
+df = df.dropna()
+
+# Close 컬럼이 MultiIndex일 경우 대비
+if isinstance(df["Close"], type(df)):
+    close_series = df["Close"][ticker]
+else:
+    close_series = df["Close"]
+
+close = float(close_series.iloc[-1])
+prev = float(close_series.iloc[-2])
     chg = (close / prev - 1.0) * 100.0
     return close, chg
 
