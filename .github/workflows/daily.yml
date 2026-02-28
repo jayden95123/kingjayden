@@ -19,10 +19,15 @@ jobs:
           python-version: "3.11"
 
       - name: Install deps
-        run: pip install yfinance requests
+        run: pip install yfinance requests feedparser pykrx pandas openai
+
+      - name: Syntax check
+        run: python -m py_compile send_briefing.py
 
       - name: Send briefing
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
         run: python send_briefing.py
